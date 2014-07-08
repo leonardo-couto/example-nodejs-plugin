@@ -5,3 +5,7 @@ pom.xml.next
 release.properties
 .classpath
 .project
+.settings
+generated
+node_modules
+

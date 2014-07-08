@@ -5,8 +5,15 @@
   <artifactId>example-nodejs-plugin</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>example-nodejs-plugin Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+  <name>Example Node.js plugin webapp</name>
+  <url>http://github.com/leonardo-couto/example-nodejs-plugin</url>
+
+  <properties>
+    <node.target>${basedir}/generated</node.target>
+    <node.path>${node.target}/node/bin</node.path>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -15,7 +22,130 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
-    <finalName>example-nodejs-plugin</finalName>
+    <finalName>example</finalName>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>add-javascript-source</id>
+            <phase>generate-sources</phase>
+            <goals><goal>add-source</goal></goals>
+            <configuration>
+              <sources>
+                <source>src/main/javascript</source>
+              </sources>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>add-javascript-test-source</id>
+            <phase>generate-sources</phase>
+            <goals><goal>add-test-source</goal></goals>
+            <configuration>
+              <sources>
+                <source>src/test/javascript</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.3</version>
+        <executions>
+          <execution>
+            <id>npm-install</id>
+            <phase>initialize</phase>
+            <configuration>
+              <executable>${node.path}/npm</executable>
+              <arguments>
+                <argument>install</argument>
+              </arguments>
+              <workingDirectory>${basedir}</workingDirectory>
+              <environmentVariables>
+                <PATH>${node.path}:${env.PATH}</PATH>
+              </environmentVariables>
+            </configuration>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <id>grunt-default</id>
+            <phase>test</phase>
+            <configuration>
+              <executable>${node.path}/grunt</executable>
+              <workingDirectory>${basedir}</workingDirectory>
+              <environmentVariables>
+                <PATH>${node.path}:${env.PATH}</PATH>
+              </environmentVariables>
+            </configuration>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.leonardo-couto</groupId>
+        <artifactId>nodejs-installer-plugin</artifactId>
+        <version>0.10.28</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <npm>
+            <install>grunt-cli</install>
+          </npm>
+          <target>${node.target}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>9.2.1.v20140609</version>
+      </plugin>
+
+    </plugins>
   </build>
+
 </project>
