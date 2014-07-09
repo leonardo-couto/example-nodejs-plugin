@@ -1,7 +1,7 @@
 example-nodejs-plugin
 =====================
 
-Example project for nodejs-installer-plugin demonstration.
+Example project for [nodejs-installer-plugin](https://github.com/leonardo-couto/example-nodejs-plugin) demonstration.
 
 To run just type ```mvn jetty:run-war```. The application will be started at [http://localhost:8080/](http://localhost:8080/). To just fire the javascript tests try ```mvn test```.
 
